@@ -108,7 +108,7 @@
 <meta property="og:description" content="在多线程并发编程中，锁的运用很常见。synchronized 的几种运用方式，相信大部分 Java 程序员已经很熟悉。而 volatile 作为轻量级的 synchronized，不会像锁一样造成阻塞，因此，在能够安全使用 volatile 的情况下，volatile 可以提供一些优于锁的可伸缩特性。如果读操作的次数要远远超过写操作，与锁相比，volatile 变量通常能够减少同步的性能开销。">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http://res.cloudinary.com/otway/image/upload/v1523032573/1523032548939.jpg">
-<meta property="og:updated_time" content="2018-04-06T18:44:35.000Z">
+<meta property="og:updated_time" content="2018-04-06T18:48:13.516Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java 多线程 ：Volatile">
 <meta name="twitter:description" content="在多线程并发编程中，锁的运用很常见。synchronized 的几种运用方式，相信大部分 Java 程序员已经很熟悉。而 volatile 作为轻量级的 synchronized，不会像锁一样造成阻塞，因此，在能够安全使用 volatile 的情况下，volatile 可以提供一些优于锁的可伸缩特性。如果读操作的次数要远远超过写操作，与锁相比，volatile 变量通常能够减少同步的性能开销。">
@@ -470,14 +470,14 @@
 <p>当 update 方法调用时，numA,numB,numC 的新值都会直接写入系统内存。但是如果重新排序成这样：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> numA, <span class="keyword">int</span> numB, <span class="keyword">int</span> numC)</span></span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.numC  = numC;</span><br><span class="line">    <span class="keyword">this</span>.numA   = numA;</span><br><span class="line">    <span class="keyword">this</span>.numB = numB;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>修改 numC 变量时，A和B的值仍会写入主内存，但这一次是在A和B的新值写入之前发生的。因此，其他线程无法正确地看到A和B的新值。重新排序的指令的语义已经改变。</p>
-<p>为了解决指令重新排序这个难题，Java volatile 关键字除了提供可见性保证之外，还提供“发生前”保证：</p>
+<p>为了解决指令重新排序这个难题，Java volatile 关键字除了提供可见性保证之外，还提供“happens-before”保证：</p>
 <ul>
 <li><p>如果读取/写入其他变量的操作最初就发生在写入 volatile 修饰变量之前，那么指令重新排序时，不允许这个操作被排到被 volatile 修饰的变量写入之后；注意,对于其他变量的操作最初发生在写入 volatile 修饰变量之后的，那么重新排序是仍然有可能排到 volatile 修饰变量写入之前。</p>
 </li>
 <li><p>如果读取/写入其他变量的操作最初就发生在写入 volatile 修饰变量之后，那么指令重新排序时，不允许这个操作被排到被 volatile 修饰的变量写入之前；注意,对于其他变量的操作最初发生在写入 volatile 修饰变量之前的，那么重新排序是仍然有可能排到 volatile 修饰变量写入之后。</p>
 </li>
 </ul>
-<p>上述的“发生前”保证正在被实施。</p>
+<p>上述的“happens-before”保证正在被实施。</p>
 <h2 id="volatile-并不保险"><a href="#volatile-并不保险" class="headerlink" title="volatile 并不保险"></a>volatile 并不保险</h2><p>对 volatile 修饰的变量操作时，即使每次都是从系统内存读取，都是直接写入系统内存，仍然会存在并发的情况。</p>
 <p>当多个线程同时写入一个 volatile 变量时，例如 <code>i++</code> 操作，第一个处理器缓存 i 进行了 +1 操作，还没来得及写入系统内存，第二个处理器页从系统内存中缓存了旧的 i 并且也完成了 +1 操作，并还没有写入系统内存。这时就会出现写入覆盖的情况。</p>
 <h2 id="合适的使用场景"><a href="#合适的使用场景" class="headerlink" title="合适的使用场景"></a>合适的使用场景</h2><p>读取和写入一个 volatile 变量会直接和系统内存通信，对比与处理器缓存通信的消耗要大得多。访问 volatile 变量还防止指令重新排序，这是一种正常的性能增强技术。所以只有在真正需要变量强制可见性时才应该使用。</p>
