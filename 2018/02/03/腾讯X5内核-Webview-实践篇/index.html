@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="基于腾讯X5内核的WebView开发：1.onPageFinished2.onProgressChanged()3.合适的时机获取页面元素">
+<meta name="keywords" content="WebView">
+<meta property="og:type" content="article">
+<meta property="og:title" content="腾讯X5内核 WebView 实践篇">
+<meta property="og:url" content="https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/index.html">
+<meta property="og:site_name" content="Otway">
+<meta property="og:description" content="基于腾讯X5内核的WebView开发：1.onPageFinished2.onProgressChanged()3.合适的时机获取页面元素">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-04-06T07:05:12.506Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="腾讯X5内核 WebView 实践篇">
+<meta name="twitter:description" content="基于腾讯X5内核的WebView开发：1.onPageFinished2.onProgressChanged()3.合适的时机获取页面元素">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>腾讯X5内核 WebView 实践篇</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/tags/">tags</a></li>
+         
+          <li><a href="http://github.com/otwayz">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/02/22/腾讯X5内核-WebView-实践总结/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&text=腾讯X5内核 WebView 实践篇"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&title=腾讯X5内核 WebView 实践篇"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&is_video=false&description=腾讯X5内核 WebView 实践篇"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=腾讯X5内核 WebView 实践篇&body=Check out this article: https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&title=腾讯X5内核 WebView 实践篇"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&title=腾讯X5内核 WebView 实践篇"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&title=腾讯X5内核 WebView 实践篇"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&title=腾讯X5内核 WebView 实践篇"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&name=腾讯X5内核 WebView 实践篇&description=&lt;p&gt;基于腾讯X5内核的&lt;code&gt;WebView&lt;/code&gt;开发：&lt;br&gt;1.&lt;code&gt;onPageFinished&lt;/code&gt;&lt;br&gt;2.&lt;code&gt;onProgressChanged()&lt;/code&gt;&lt;br&gt;3.合适的时机获取页面元素&lt;br&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#onPageFinished-踩坑"><span class="toc-number">1.</span> <span class="toc-text">onPageFinished() 踩坑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#onProgressChanged"><span class="toc-number">2.</span> <span class="toc-text">onProgressChanged()</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#时机"><span class="toc-number">3.</span> <span class="toc-text">时机</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        腾讯X5内核 WebView 实践篇
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Otway</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-02-03T07:59:29.000Z" itemprop="datePublished">2018-02-03</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/WebView/">WebView</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>基于腾讯X5内核的<code>WebView</code>开发：<br>1.<code>onPageFinished</code><br>2.<code>onProgressChanged()</code><br>3.合适的时机获取页面元素<br><a id="more"></a></p>
+<h1 id="onPageFinished-踩坑"><a href="#onPageFinished-踩坑" class="headerlink" title="onPageFinished() 踩坑"></a>onPageFinished() 踩坑</h1><p>业务需求是在 <code>html</code> 中注入 <code>js</code>脚本实现阅读模式切换功能。但是基于开源项目 <a href="https://github.com/mozilla/readability">mozilla/readability</a> 开发，项目脚本过长，如果不能选定合适的时机注入，那么势必会影响用户交互。</p>
+<p>在实现需求阶段，实现方式是在 <code>onPageFinished()</code> 注入 <code>js</code>。注入代码完成之后，在页面 <code>ready()</code> 状态中主动去通知客户端当前页面内容加载完成，并且是否可以切换阅读模式。根据前端的状态返回来确定客户端的表现。当然，这个过程是缓慢的，所以不建议直接加载阅读模式的<code>html</code> 。</p>
+<p>注入代码留存：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">injectScriptFile</span><span class="params">(X5WebView webView, String scriptFile)</span> </span>&#123;</span><br><span class="line">        InputStream input;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            input = getActivity().getAssets().open(scriptFile);</span><br><span class="line">            <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[input.available()];</span><br><span class="line">            input.read(buffer);</span><br><span class="line">            input.close();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// String-ify the script byte-array using BASE64 encoding !!!</span></span><br><span class="line">            String encoded = Base64.encodeToString(buffer, Base64.NO_WRAP);</span><br><span class="line">            webView.loadUrl(<span class="string">"javascript:(function() &#123;"</span> +</span><br><span class="line">                    <span class="string">"var scriptElement = document.getElementById('readability-script');"</span> +</span><br><span class="line">                    <span class="comment">//"alert(scriptElement);" +</span></span><br><span class="line">                    <span class="string">"if(!scriptElement) &#123;"</span> +</span><br><span class="line">                    <span class="string">"var parent = document.getElementsByTagName('head').item(0);"</span> +</span><br><span class="line">                    <span class="string">"var script = document.createElement('script');"</span> +</span><br><span class="line">                    <span class="string">"script.type = 'text/javascript';"</span> +</span><br><span class="line"><span class="comment">//                    "script.async = 'true';" +</span></span><br><span class="line">                    <span class="string">"script.id = 'readability-script';"</span> +</span><br><span class="line">                    <span class="comment">// Tell the browser to BASE64-decode the string into your script !!!</span></span><br><span class="line">                    <span class="string">"script.innerHTML = window.atob('"</span> + encoded + <span class="string">"');"</span> +</span><br><span class="line">                    <span class="string">"parent.appendChild(script);&#125;"</span> +</span><br><span class="line">                    <span class="string">"&#125;)()"</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>在功能完成之后，我们发现，有的网页出现<em>解析代码运行之后通知客户端是可读的，但是我们并不能获取到展示的文本信息。导致切换阅读模式出现空白页面的情况。</em></p>
+<p>这个Bug目前还没有解决，规避方案是当前页面的检测结果为可切换阅读模式页面并且可阅读文本不为空时，我们才会通知客户端该页面支持阅读模式的状态。我们目前选择了规避。</p>
+<p>在页面调试时发现，上述的<code>script</code>标签内容导入了两次，虽然能够正常运行，但是无疑是增加了<code>WebView</code>消耗。</p>
+<p>经过排查发现，在新网页开启时，会立即调用<code>onPageStarted()</code>和<code>onPageFinished()</code>方法，这个时候会第一次注入<code>js</code>,当页面完全加载完，<code>WebView</code>还是会回调一次<code>onPageFinished()</code>方法。那么这就是第二次的注入时机。<br>上面的分析合情合理，但是真实原因并不是这个，因为我们发现在第一次<code>onPageFinished()</code>调用的时候，我们在注入<code>js</code>之后会去主动调用注入的一个方法，通过 <a href="chrome://inspect" target="_blank" rel="noopener">chrome://inspect</a> 调试发现，这个时候调用的方法是<code>Undefined</code>状态，所以说我们的注入是失败的。那么也就说明一个猜测，第一次回调<code>onPageFinished()</code>时，网页并没有完成<code>html</code>基本的格式加载。为什么在没有完成加载最基础的标签时，我们会收到<code>onPageFinished()</code>回调呢，这简直就是一个大坑，这个问题还没有深入研究，待后续再说吧。</p>
+<p>排除了上述这个原因，那么为什么会出现<code>js</code>导入多次的情况呢？</p>
+<p>由于本人并不了解前端开发，所以出现这个问题才知晓了<strong>单页面应用</strong>的概念，具体的可以自行了解<a href="https://baike.baidu.com/item/SPA/17536313" target="_blank" rel="noopener">单页应用程序</a>。</p>
+<p>在单页面应用中，页面跳转中 <code>&lt;header/&gt;</code> 标签内容是一直存在的。在主页注入<code>&lt;script/&gt;</code>标签之后，在后续的<code>onPageFinished()</code>方法中重复导入。就会造成注入冗余的情况。</p>
+<p>终于找到原因所在，那么上述的注入代码中，修改了<code>js</code>部分的代码，先去确定标签不存在再去注入。</p>
+<blockquote>
+<p>总结：<br>单页面应用在跳转时只会刷新<code>&lt;body/&gt;</code>内的信息，当然其他标签如果有更新也会变化，暂不考虑。而<code>&lt;header/&gt;</code>中注&gt;入<code>js</code>的动作执行了两次，所以导致了<code>&lt;script/&gt;</code>标签冗余。</p>
+</blockquote>
+<p><strong>这里还有个坑，在单页应用跳转时除了第一次加载外框页面会回调<code>onPageStarted()</code>,之后的内部页面跳转是没有这个回调的。</strong></p>
+<h1 id="onProgressChanged"><a href="#onProgressChanged" class="headerlink" title="onProgressChanged()"></a>onProgressChanged()</h1><p><code>WebView</code> 可以通过设置 <code>WebChromeClient</code> 来监听页面资源的加载情况，本文主要用<code>onProgressChanged()</code>方法。</p>
+<p>在上面已经说过，需要注入的<code>js</code>过长，如果放在页面加载完成再去注入，是否很不合理。所以我们希望可以在页面加载过程中，去异步的注入。</p>
+<p>最理想的状态是页面基本<code>html</code>加载完成之后，给客户端一个状态通知，然后这个时机去异步注入（想想罢了，不知道前端技术人员是否能够感知到这个状态）。</p>
+<p>采取了大众方案，在<code>onProgressChanged(WebView webView, int newProgress)</code>回调的30%去注入。当然具体的进度值还需要自己去测试。</p>
+<p>通过<code>logcat</code>你会发现，这里的进度显示也很诡异。</p>
+<p>逼不得已，添加了一个<code>flag</code>来控制，在第一次导入开始时关闭，在<code>onPageStarted()</code>中打开。</p>
+<h1 id="时机"><a href="#时机" class="headerlink" title="时机"></a>时机</h1><p>既然<code>WebView</code>的回调方法这么不靠谱，那么我们就不能将核心功能依赖这两个不靠谱的方法。</p>
+<p>由于阅读模式的检测是需要解析页面元素的，那么前端小伙伴是否能够在能够解析并解析完成之后将结果主动地下发到客户端呢？</p>
+<p>前端我只是了解了一个<code>ready()</code>的方法，是可以监听到页面加载完成的，前端发送一个跳转给客户端，客户端需要通过<code>shouldOverrideUrlLoading(WebView webView, String url)</code>方法主动去拦截前端的跳转，然后根据需求，可以去完成对应的具体功能。</p>
+<p>这部分还在研究，看看前端是否有更加精准的方式来通知客户端。</p>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/tags/">tags</a></li>
+         
+          <li><a href="http://github.com/otwayz">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#onPageFinished-踩坑"><span class="toc-number">1.</span> <span class="toc-text">onPageFinished() 踩坑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#onProgressChanged"><span class="toc-number">2.</span> <span class="toc-text">onProgressChanged()</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#时机"><span class="toc-number">3.</span> <span class="toc-text">时机</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&text=腾讯X5内核 WebView 实践篇"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&title=腾讯X5内核 WebView 实践篇"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&is_video=false&description=腾讯X5内核 WebView 实践篇"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=腾讯X5内核 WebView 实践篇&body=Check out this article: https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&title=腾讯X5内核 WebView 实践篇"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&title=腾讯X5内核 WebView 实践篇"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&title=腾讯X5内核 WebView 实践篇"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&title=腾讯X5内核 WebView 实践篇"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://github.com/otwayz/2018/02/03/腾讯X5内核-Webview-实践篇/&name=腾讯X5内核 WebView 实践篇&description=&lt;p&gt;基于腾讯X5内核的&lt;code&gt;WebView&lt;/code&gt;开发：&lt;br&gt;1.&lt;code&gt;onPageFinished&lt;/code&gt;&lt;br&gt;2.&lt;code&gt;onProgressChanged()&lt;/code&gt;&lt;br&gt;3.合适的时机获取页面元素&lt;br&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Otway
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/tags/">tags</a></li>
+         
+          <li><a href="http://github.com/otwayz">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

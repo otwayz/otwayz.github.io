@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="在复杂的业务场景中，会利用到 NestedScrollView 嵌套好几个固定的布局来展示内容。在固定的布局中可能存在竖向的列表，并且要求列表完全展开。针对列表中的 Item 还需要赋予位置移动动画，整个列表收缩动画及展开动画。">
+<meta name="keywords" content="Android,RecyclerView">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案">
+<meta property="og:url" content="https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/index.html">
+<meta property="og:site_name" content="Otway">
+<meta property="og:description" content="在复杂的业务场景中，会利用到 NestedScrollView 嵌套好几个固定的布局来展示内容。在固定的布局中可能存在竖向的列表，并且要求列表完全展开。针对列表中的 Item 还需要赋予位置移动动画，整个列表收缩动画及展开动画。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-04-06T07:05:12.505Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案">
+<meta name="twitter:description" content="在复杂的业务场景中，会利用到 NestedScrollView 嵌套好几个固定的布局来展示内容。在固定的布局中可能存在竖向的列表，并且要求列表完全展开。针对列表中的 Item 还需要赋予位置移动动画，整个列表收缩动画及展开动画。">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/tags/">tags</a></li>
+         
+          <li><a href="http://github.com/otwayz">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/02/03/腾讯X5内核-Webview-实践篇/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/12/10/Android-Menu/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&text=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&title=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&is_video=false&description=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案&body=Check out this article: https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&title=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&title=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&title=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&title=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&name=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案&description=&lt;p&gt;在复杂的业务场景中，会利用到 NestedScrollView 嵌套好几个固定的布局来展示内容。&lt;br&gt;在固定的布局中可能存在竖向的列表，并且要求列表完全展开。针对列表中的 Item 还需要赋予位置移动动画，整个列表收缩动画及展开动画。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#情景说明"><span class="toc-number">1.</span> <span class="toc-text">情景说明</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#个人解决方案"><span class="toc-number">2.</span> <span class="toc-text">个人解决方案</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Otway</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-01-27T08:59:22.000Z" itemprop="datePublished">2018-01-27</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>, <a class="tag-link" href="/tags/RecyclerView/">RecyclerView</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>在复杂的业务场景中，会利用到 NestedScrollView 嵌套好几个固定的布局来展示内容。<br>在固定的布局中可能存在竖向的列表，并且要求列表完全展开。针对列表中的 Item 还需要赋予位置移动动画，整个列表收缩动画及展开动画。</p>
+<a id="more"></a>
+<h1 id="情景说明"><a href="#情景说明" class="headerlink" title="情景说明"></a>情景说明</h1><p>本文针对该场景采取的是嵌套实现。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">android.support.v4.widget.NestedScrollView</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:app</span>=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">android:id</span>=<span class="string">"@+id/nested_scroll_view"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">android:layout_height</span>=<span class="string">"0dp"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">android:layout_weight</span>=<span class="string">"1"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">android:fillViewport</span>=<span class="string">"true"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">       <span class="tag">&lt;<span class="name">LinearLayout</span></span></span><br><span class="line"><span class="tag">           <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">android:orientation</span>=<span class="string">"vertical"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">           <span class="tag">&lt;<span class="name">LinearLayout</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:id</span>=<span class="string">"@+id/container"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:orientation</span>=<span class="string">"vertical"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">               <span class="tag">&lt;<span class="name">android.support.v7.widget.RecyclerView</span></span></span><br><span class="line"><span class="tag">                   <span class="attr">android:id</span>=<span class="string">"@+id/recycler_view"</span></span></span><br><span class="line"><span class="tag">                   <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">                   <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;/<span class="name">android.support.v7.widget.RecyclerView</span>&gt;</span></span><br><span class="line"></span><br><span class="line">           <span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br><span class="line"></span><br><span class="line">           <span class="tag">&lt;<span class="name">LinearLayout</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:layout_height</span>=<span class="string">"300dp"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:background</span>=<span class="string">"@color/colorAccent"</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">android.support.v4.widget.NestedScrollView</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在上面的布局中，RecyclerView中是一个列表数据的展示，其中包含 位置移动，收缩，展开等操作。（PS：上述层级较多，只是为了测试层级对RecyclerView的影响，毕竟复杂场景不会只有一个RecyclerView</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">val list = ArrayList&lt;Int&gt;()</span><br><span class="line">list += <span class="number">1.</span><span class="number">.20</span></span><br><span class="line">recycler_view.layoutManager = LinearLayoutManager(<span class="keyword">this</span>)</span><br><span class="line">adapter = Adapter&lt;Int&gt;(list)</span><br><span class="line">recycler_view.adapter = adapter</span><br><span class="line">recycler_view.itemAnimator = DefaultItemAnimator()</span><br><span class="line">recycler_view.itemAnimator.addDuration = <span class="number">1000</span></span><br><span class="line">recycler_view.itemAnimator.removeDuration = <span class="number">1000</span></span><br><span class="line">adapter!!.expand()</span><br></pre></td></tr></table></figure>
+<p>这里我们将动画的时长设置很长，便于观察。其中 Adapter 增加了收缩和展开的方法。 </p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">private <span class="keyword">var</span> maxCount = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">override fun getItemCount(): Int &#123;</span><br><span class="line">    <span class="keyword">return</span> minOf(dataList.size, maxCount)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fun expand() &#123;</span><br><span class="line">    val count = itemCount    <span class="comment">//  同  getItemCount()</span></span><br><span class="line">    maxCount = Int.MAX_VALUE</span><br><span class="line">    notifyItemRangeInserted(count, itemCount - count)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fun collapse() &#123;</span><br><span class="line">    val count = itemCount</span><br><span class="line">    maxCount = <span class="number">1</span></span><br><span class="line">    notifyItemRangeRemoved(<span class="number">1</span>, count - itemCount)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>简单的配置之后，我们发现。在展开动画开启时，RecyclerView 会伸缩到合适的高度以容纳 所有的 Item（这里设置了 <code>android:fillViewport=&quot;true&quot;</code> 的属性），然后我们才会看到默认的 add Item 的动画。但是，当我们收缩列表的时候，并没有观察到动画，给人的感觉是 直接 调用了 <code>notifyDataSetChanged()</code> 的方法。下面我们追踪一下源码来看看为什么会出现这种问题。</p>
+<p>首先是  <code>notifyItemRangeRemoved()</code> 方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">notifyItemRangeRemoved</span><span class="params">(<span class="keyword">int</span> positionStart, <span class="keyword">int</span> itemCount)</span> </span>&#123;</span><br><span class="line">    mObservable.notifyItemRangeRemoved(positionStart, itemCount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>根据该条代码进行追踪到最终实现的部分，在 <code>RecyclerViewDataObserver</code> 的实现中，我们找到了具体的实现逻辑。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemRangeRemoved</span><span class="params">(<span class="keyword">int</span> positionStart, <span class="keyword">int</span> itemCount)</span> </span>&#123;</span><br><span class="line">        assertNotInLayoutOrScroll(<span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">if</span> (mAdapterHelper.onItemRangeInserted(positionStart, itemCount)) &#123;</span><br><span class="line">            triggerUpdateProcessor();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">triggerUpdateProcessor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (POST_UPDATES_ON_ANIMATION &amp;&amp; mHasFixedSize &amp;&amp; mIsAttached) &#123;</span><br><span class="line">            ViewCompat.postOnAnimation(RecyclerView.<span class="keyword">this</span>, mUpdateChildViewsRunnable);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            mAdapterUpdateDuringMeasure = <span class="keyword">true</span>;</span><br><span class="line">            requestLayout();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><code>mHasFixedSize</code> 字段的控制是关键所在，默认是false，所以直接进行了 <code>requestLayout()</code> 的操作，导致RecyclerView的高度直接变化到最小。</p>
+<h1 id="个人解决方案"><a href="#个人解决方案" class="headerlink" title="个人解决方案"></a>个人解决方案</h1><ul>
+<li>如果列表的初始状态为完全展开状态。可以通过测量第一个Item高度，以及总高度</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">recycler_view.post &#123;</span><br><span class="line">    val viewFirst = recycler_view.layoutManager.findViewByPosition(<span class="number">0</span>)</span><br><span class="line">    firstItemHeight = viewFirst!!.height</span><br><span class="line">    totalHeight = recycler_view.height</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//调用 adapter.collapse()或者 expand()的时候 调用 下面的方法。</span></span><br><span class="line">height(recycler_view, totalHeight.toFloat(), firstItemHeight.toFloat(), <span class="number">1000</span>, <span class="literal">null</span>)</span><br></pre></td></tr></table></figure>
+<p>只需要在收缩时 调用  height  的动画即可，展开也可以调用。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">fun height(view: View, <span class="attr">from</span>: Float, <span class="attr">to</span>: Float, <span class="attr">duration</span>: Int, <span class="attr">animatorListener</span>: Animator.AnimatorListener?): ValueAnimator &#123;</span><br><span class="line">    val animator = ValueAnimator.ofFloat(<span class="keyword">from</span>, to)</span><br><span class="line">    animator.duration = duration.toLong()</span><br><span class="line">    <span class="keyword">if</span> (animatorListener != <span class="literal">null</span>) &#123;</span><br><span class="line">        animator.addListener(animatorListener)</span><br><span class="line">    &#125;</span><br><span class="line">    animator.addUpdateListener &#123; animation -&gt;</span><br><span class="line">        <span class="keyword">if</span> (view.layoutParams != <span class="literal">null</span>) &#123;</span><br><span class="line">            val lp = view.layoutParams</span><br><span class="line">            val aFloat = animation.animatedValue <span class="keyword">as</span> Float</span><br><span class="line">            lp.height = aFloat.toInt()</span><br><span class="line">            view.layoutParams = lp</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    animator.start()</span><br><span class="line">    <span class="keyword">return</span> animator</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过设置  <code>mHasFixedSize</code> 属性 来达到目的</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (iem.itemId == R.id.collapse) &#123;</span><br><span class="line">    recycler_view.setHasFixedSize(<span class="keyword">true</span>)</span><br><span class="line">    it.collapse()</span><br><span class="line">    recycler_view.postDelayed(&#123;</span><br><span class="line">        recycler_view.setHasFixedSize(<span class="keyword">false</span>)</span><br><span class="line">        recycler_view.requestLayout()</span><br><span class="line">    &#125;, recycler_view.itemAnimator.addDuration)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    recycler_view.setHasFixedSize(<span class="keyword">false</span>)</span><br><span class="line">    it.expand()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/tags/">tags</a></li>
+         
+          <li><a href="http://github.com/otwayz">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#情景说明"><span class="toc-number">1.</span> <span class="toc-text">情景说明</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#个人解决方案"><span class="toc-number">2.</span> <span class="toc-text">个人解决方案</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&text=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&title=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&is_video=false&description=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案&body=Check out this article: https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&title=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&title=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&title=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&title=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://github.com/otwayz/2018/01/27/RecyclerView-NestedScrollView-嵌套收缩动画解决方案/&name=RecyclerView &amp; NestedScrollView 嵌套收缩动画解决方案&description=&lt;p&gt;在复杂的业务场景中，会利用到 NestedScrollView 嵌套好几个固定的布局来展示内容。&lt;br&gt;在固定的布局中可能存在竖向的列表，并且要求列表完全展开。针对列表中的 Item 还需要赋予位置移动动画，整个列表收缩动画及展开动画。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Otway
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/tags/">tags</a></li>
+         
+          <li><a href="http://github.com/otwayz">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
