@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.1.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/drupal-logo-128.png?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/drupal-logo-32.png?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/drupal-logo-16.png?v=6.1.0">
+
+
+  <link rel="mask-icon" href="/images/drupal-logo.svg?v=6.1.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.1.0',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="在多线程并发编程中，锁的运用很常见。synchronized 的几种运用方式，相信大部分 Java 程序员已经很熟悉。而 volatile 作为轻量级的 synchronized，不会像锁一样造成阻塞，因此，在能够安全使用 volatile 的情况下，volatile 可以提供一些优于锁的可伸缩特性。如果读操作的次数要远远超过写操作，与锁相比，volatile 变量通常能够减少同步的性能开销。">
+<meta name="keywords" content="多线程,并发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 多线程 ：Volatile">
+<meta property="og:url" content="https://github.com/otwayz/2018/04/06/Java-多线程-：volatile/index.html">
+<meta property="og:site_name" content="Otway">
+<meta property="og:description" content="在多线程并发编程中，锁的运用很常见。synchronized 的几种运用方式，相信大部分 Java 程序员已经很熟悉。而 volatile 作为轻量级的 synchronized，不会像锁一样造成阻塞，因此，在能够安全使用 volatile 的情况下，volatile 可以提供一些优于锁的可伸缩特性。如果读操作的次数要远远超过写操作，与锁相比，volatile 变量通常能够减少同步的性能开销。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://res.cloudinary.com/otway/image/upload/v1523032573/1523032548939.jpg">
+<meta property="og:updated_time" content="2018-04-06T18:33:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 多线程 ：Volatile">
+<meta name="twitter:description" content="在多线程并发编程中，锁的运用很常见。synchronized 的几种运用方式，相信大部分 Java 程序员已经很熟悉。而 volatile 作为轻量级的 synchronized，不会像锁一样造成阻塞，因此，在能够安全使用 volatile 的情况下，volatile 可以提供一些优于锁的可伸缩特性。如果读操作的次数要远远超过写操作，与锁相比，volatile 变量通常能够减少同步的性能开销。">
+<meta name="twitter:image" content="http://res.cloudinary.com/otway/image/upload/v1523032573/1523032548939.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="https://github.com/otwayz/2018/04/06/Java-多线程-：volatile/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Java 多线程 ：Volatile | Otway</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> 
+
+<div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Otway</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-tags menu-item-active">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+</li>
+
+      
+
+      
+    </ul>
+  
+
+  
+    
+
+    
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+    
+
+  
+
+
+  
+
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/otwayz/2018/04/06/Java-多线程-：volatile/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Otway">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Otway">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java 多线程 ：Volatile</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-06T21:48:34+08:00">2018-04-06</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在多线程并发编程中，锁的运用很常见。synchronized 的几种运用方式，相信大部分 Java 程序员已经很熟悉。而 <strong>volatile 作为轻量级的 synchronized</strong>，不会像锁一样造成阻塞，因此，在能够安全使用 volatile 的情况下，volatile 可以提供一些优于锁的可伸缩特性。如果读操作的次数要远远超过写操作，与锁相比，volatile 变量通常能够减少同步的性能开销。</p>
+<a id="more"></a>
+<h2 id="Volatile-的官方定义"><a href="#Volatile-的官方定义" class="headerlink" title="Volatile 的官方定义"></a>Volatile 的官方定义</h2><p>Java 语言规范第三版中对 volatile 的定义如下： java编程语言允许线程访问共享变量，为了确保共享变量能被准确和一致的更新，线程应该确保通过排他锁单独获得这个变量。Java语言提供了 volatile，在某些情况下比锁更加方便。如果一个字段被声明成volatile，java线程内存模型确保所有线程看到这个变量的值是一致的。</p>
+<h2 id="内存不可见的含义"><a href="#内存不可见的含义" class="headerlink" title="内存不可见的含义"></a>内存不可见的含义</h2><p>在 JVM 中，对于多线程应用，如果多个线程同时使用某个没有 volatile 修饰的变量时，每个线程会从堆内存拷贝目标变量到当前线程所在的 CPU 的缓存中，然后针对这个 Cache 进行具体的操作。如果在多核设备上，多线程同时操作这个变量，可能存在两个线程运行在两个不同的 CPU 的情况，那么这两个线程所在的 CPU 将会存在各自的 CPU Cache。</p>
+<p><img src="http://res.cloudinary.com/otway/image/upload/v1523032573/1523032548939.jpg" alt="示例图"></p>
+<p>这中情况下，从堆内存读取或者写入，都会存在一些问题。那么这个时候对于这两个线程来说，堆内存中的变量就是不可见的。</p>
+<h2 id="如何保证内存可见"><a href="#如何保证内存可见" class="headerlink" title="如何保证内存可见"></a>如何保证内存可见</h2><p>volatile 如何实现内存可见的呢？<br>在x86处理器下通过工具获取JIT编译器生成的汇编指令：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">语言</th>
+<th style="text-align:left">代码片段</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Java</td>
+<td style="text-align:left">instance = new Singleton(); <br> //instance 是 volatile 修饰变量</td>
+</tr>
+<tr>
+<td style="text-align:center">汇编</td>
+<td style="text-align:left">0x01a3de1d: movb $0x0,0x1104800(%esi);<br>0x01a3de24: lock addl $0x0,(%esp);</td>
+</tr>
+</tbody>
+</table>
+<p>有 volatile 变量修饰的共享变量进行写操作的时候会多第二行汇编代码,通过查IA-32架构软件开发者手册可知，lock前缀的指令在多核处理器下会引发了两件事情。</p>
+<ul>
+<li>将当前处理器缓存行的数据会写回到系统内存。</li>
+<li>这个写回内存的操作会引起在其他CPU里缓存了该内存地址的数据无效。</li>
+</ul>
+<p>也就是说，处理器为了提高处理速度，不直接和内存通讯，而是先将内存数据拷贝到缓存后再操作（同上图）。如果变量声明了 volatile，那么处理器读取操作会直接和内存进行通讯，将变量所在缓存行的数据直接写入系统内存或者直接读取系统内存数据。但是如果其他处理器缓存的数据仍然是旧的数据，那么再执行计算操作就是无意义的。所以这里就存在缓存一致性协议，每个处理器通过嗅探在总线上传播的数据来检测自身缓存是否过期，如果检测到自己缓存行对应的数据被修改。那么会将当前处理器缓存行设置为无效状态。当处理器需要该数据进行操作时，会强制从系统内存重新加载到当前处理器缓存中。</p>
+<p><strong>缓存一致性机制会阻止同时修改被两个以上处理器缓存的内存区域数据。</strong></p>
+<p>具体的专有名词及细节可以看文末的 reference.</p>
+<h2 id="保证对-64-位变量读写的原子性"><a href="#保证对-64-位变量读写的原子性" class="headerlink" title="保证对 64 位变量读写的原子性"></a>保证对 64 位变量读写的原子性</h2><p>JVM 可以保证对 32位 数据读写的原子性，但是对于 long 和 double 这样 64位 的数据的读写，会将其分为 高32位 和 低32位 分两次读写。所以对于 long 或 double 的读写并不是原子性的，这样在并发程序中共享 long 或 double 变量就可能会出现问题，于是 JVM 提供了 volatile 关键字来解决这个问题：</p>
+<blockquote>
+<p>使用 volatile 修饰的 long 或 double 变量，JVM 可以保证对其读写的原子性。</p>
+</blockquote>
+<p>但是，此处的 “写” 仅指对 64位 的变量进行直接赋值。而对于 i++ 这个语句，事实上涉及了 读取－修改－写入 三个操作：</p>
+<ul>
+<li>读取变量到栈中某个位置</li>
+<li>对栈中该位置的值进行自增</li>
+<li>将自增后的值写回到变量对应的存储位置</li>
+</ul>
+<p>所以多线程条件下使用 volatile 关键字的前提是：<strong>对变量的写操作不依赖于变量的当前值</strong>。</p>
+<h2 id="指令重新排序对-volatile-的影响"><a href="#指令重新排序对-volatile-的影响" class="headerlink" title="指令重新排序对 volatile 的影响"></a>指令重新排序对 volatile 的影响</h2><p>如果一个操作不是原子操作，那么 JVM 便可能会对该操作涉及的指令进行 <strong>重排序</strong>。重排序即在不改变程序语义的前提下，通过调整指令的执行顺序，尽可能达到提高运行效率的目的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">a++;</span><br><span class="line">b++;</span><br></pre></td></tr></table></figure>
+<p>可能会被重新排序为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">a++;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line">b++;</span><br></pre></td></tr></table></figure>
+<p>这样看是没什么影响的。</p>
+<p>但当一个变量是 volatile 修饰时，指令重排序就可能会出现问题。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Counter</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> numA;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> numB</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> numC;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> numA, <span class="keyword">int</span> numB, <span class="keyword">int</span> numC)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.numA  = numA;</span><br><span class="line">        <span class="keyword">this</span>.numB = numB;</span><br><span class="line">        <span class="keyword">this</span>.numC   = numC;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当 update 方法调用时，numA,numB,numC 的新值都会直接写入系统内存。但是如果重新排序成这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> numA, <span class="keyword">int</span> numB, <span class="keyword">int</span> numC)</span></span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.numC  = numC;</span><br><span class="line">    <span class="keyword">this</span>.numA   = numA;</span><br><span class="line">    <span class="keyword">this</span>.numB = numB;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>修改 numC 变量时，A和B的值仍会写入主内存，但这一次是在A和B的新值写入之前发生的。因此，其他线程无法正确地看到A和B的新值。重新排序的指令的语义已经改变。</p>
+<p>为了解决指令重新排序这个难题，Java volatile 关键字除了提供可见性保证之外，还提供“发生前”保证：</p>
+<ul>
+<li><p>如果读取/写入其他变量的操作最初就发生在写入 volatile 修饰变量之前，那么指令重新排序时，不允许这个操作被排到被 volatile 修饰的变量写入之后；注意,对于其他变量的操作最初发生在写入 volatile 修饰变量之后的，那么重新排序是仍然有可能排到 volatile 修饰变量写入之前。</p>
+</li>
+<li><p>如果读取/写入其他变量的操作最初就发生在写入 volatile 修饰变量之后，那么指令重新排序时，不允许这个操作被排到被 volatile 修饰的变量写入之前；注意,对于其他变量的操作最初发生在写入 volatile 修饰变量之前的，那么重新排序是仍然有可能排到 volatile 修饰变量写入之后。</p>
+</li>
+</ul>
+<p>上述的“发生前”保证正在被实施。</p>
+<h2 id="volatile-并不保险"><a href="#volatile-并不保险" class="headerlink" title="volatile 并不保险"></a>volatile 并不保险</h2><p>对 volatile 修饰的变量操作时，即使每次都是从系统内存读取，都是直接写入系统内存，仍然会存在并发的情况。</p>
+<p>当多个线程同时写入一个 volatile 变量时，例如 <code>i++</code> 操作，第一个处理器缓存 i 进行了 +1 操作，还没来得及写入系统内存，第二个处理器页从系统内存中缓存了旧的 i 并且也完成了 +1 操作，并还没有写入系统内存。这时就会出现写入覆盖的情况。</p>
+<h2 id="合适的使用场景"><a href="#合适的使用场景" class="headerlink" title="合适的使用场景"></a>合适的使用场景</h2><p>读取和写入一个 volatile 变量会直接和系统内存通信，对比与处理器缓存通信的消耗要大得多。访问 volatile 变量还防止指令重新排序，这是一种正常的性能增强技术。所以只有在真正需要变量强制可见性时才应该使用。</p>
+<p>具体的几种场景可以参考<a href="https://www.ibm.com/developerworks/cn/java/j-jtp06197.html" target="_blank" rel="noopener">正确使用 Volatile 变量</a></p>
+<p>参考资料：</p>
+<ol>
+<li><a href="http://www.infoq.com/cn/articles/ftf-java-volatile" target="_blank" rel="noopener">http://www.infoq.com/cn/articles/ftf-java-volatile</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/java/j-jtp06197.html" target="_blank" rel="noopener">https://www.ibm.com/developerworks/cn/java/j-jtp06197.html</a></li>
+<li><a href="http://tutorials.jenkov.com/java-concurrency/volatile.html" target="_blank" rel="noopener">http://tutorials.jenkov.com/java-concurrency/volatile.html</a></li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+            <a href="/tags/并发/" rel="tag"># 并发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/22/腾讯X5内核-WebView-实践总结/" rel="next" title="腾讯X5内核 WebView 实践总结">
+                <i class="fa fa-chevron-left"></i> 腾讯X5内核 WebView 实践总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Otway" />
+            
+              <p class="site-author-name" itemprop="name">Otway</p>
+              <p class="site-description motion-element" itemprop="description">Ever tried, ever failed.<br/> No matter try again.<br/> Fail again, fail better.</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/otwayz" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:gucheng.zhang0901@gmail.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Volatile-的官方定义"><span class="nav-number">1.</span> <span class="nav-text">Volatile 的官方定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存不可见的含义"><span class="nav-number">2.</span> <span class="nav-text">内存不可见的含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何保证内存可见"><span class="nav-number">3.</span> <span class="nav-text">如何保证内存可见</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#保证对-64-位变量读写的原子性"><span class="nav-number">4.</span> <span class="nav-text">保证对 64 位变量读写的原子性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指令重新排序对-volatile-的影响"><span class="nav-number">5.</span> <span class="nav-text">指令重新排序对 volatile 的影响</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile-并不保险"><span class="nav-number">6.</span> <span class="nav-text">volatile 并不保险</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#合适的使用场景"><span class="nav-number">7.</span> <span class="nav-text">合适的使用场景</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Otway</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.1.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
