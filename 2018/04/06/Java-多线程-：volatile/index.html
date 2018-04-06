@@ -108,7 +108,7 @@
 <meta property="og:description" content="在多线程并发编程中，锁的运用很常见。synchronized 的几种运用方式，相信大部分 Java 程序员已经很熟悉。而 volatile 作为轻量级的 synchronized，不会像锁一样造成阻塞，因此，在能够安全使用 volatile 的情况下，volatile 可以提供一些优于锁的可伸缩特性。如果读操作的次数要远远超过写操作，与锁相比，volatile 变量通常能够减少同步的性能开销。">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http://res.cloudinary.com/otway/image/upload/v1523032573/1523032548939.jpg">
-<meta property="og:updated_time" content="2018-04-06T18:33:56.000Z">
+<meta property="og:updated_time" content="2018-04-06T18:44:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java 多线程 ：Volatile">
 <meta name="twitter:description" content="在多线程并发编程中，锁的运用很常见。synchronized 的几种运用方式，相信大部分 Java 程序员已经很熟悉。而 volatile 作为轻量级的 synchronized，不会像锁一样造成阻塞，因此，在能够安全使用 volatile 的情况下，volatile 可以提供一些优于锁的可伸缩特性。如果读操作的次数要远远超过写操作，与锁相比，volatile 变量通常能够减少同步的性能开销。">
@@ -237,9 +237,29 @@
         
           
   
-  <li class="menu-item menu-item-tags menu-item-active">
+  <li class="menu-item menu-item-tags">
     <a href="/tags/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />Categories</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-about menu-item-active">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
 </li>
 
       
@@ -252,6 +272,12 @@
     
 
     
+    
+      
+      
+    
+      
+      
     
       
       
@@ -394,7 +420,7 @@
 <a id="more"></a>
 <h2 id="Volatile-的官方定义"><a href="#Volatile-的官方定义" class="headerlink" title="Volatile 的官方定义"></a>Volatile 的官方定义</h2><p>Java 语言规范第三版中对 volatile 的定义如下： java编程语言允许线程访问共享变量，为了确保共享变量能被准确和一致的更新，线程应该确保通过排他锁单独获得这个变量。Java语言提供了 volatile，在某些情况下比锁更加方便。如果一个字段被声明成volatile，java线程内存模型确保所有线程看到这个变量的值是一致的。</p>
 <h2 id="内存不可见的含义"><a href="#内存不可见的含义" class="headerlink" title="内存不可见的含义"></a>内存不可见的含义</h2><p>在 JVM 中，对于多线程应用，如果多个线程同时使用某个没有 volatile 修饰的变量时，每个线程会从堆内存拷贝目标变量到当前线程所在的 CPU 的缓存中，然后针对这个 Cache 进行具体的操作。如果在多核设备上，多线程同时操作这个变量，可能存在两个线程运行在两个不同的 CPU 的情况，那么这两个线程所在的 CPU 将会存在各自的 CPU Cache。</p>
-<p><img src="http://res.cloudinary.com/otway/image/upload/v1523032573/1523032548939.jpg" alt="示例图"></p>
+<p><img src="http://res.cloudinary.com/otway/image/upload/v1523032573/1523032548939.jpg" width="50%" height="50%"></p>
 <p>这中情况下，从堆内存读取或者写入，都会存在一些问题。那么这个时候对于这两个线程来说，堆内存中的变量就是不可见的。</p>
 <h2 id="如何保证内存可见"><a href="#如何保证内存可见" class="headerlink" title="如何保证内存可见"></a>如何保证内存可见</h2><p>volatile 如何实现内存可见的呢？<br>在x86处理器下通过工具获取JIT编译器生成的汇编指令：</p>
 <table>
