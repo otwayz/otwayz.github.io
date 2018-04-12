@@ -106,7 +106,7 @@
 <meta property="og:site_name" content="Otway">
 <meta property="og:description" content="本篇主要记录 Hexo 静态博客接入 Gitment 的步骤和踩坑。基于 github.io 的静态博客。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-04-12T09:07:22.000Z">
+<meta property="og:updated_time" content="2018-04-12T09:10:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo 博客接入 Gitment 踩坑">
 <meta name="twitter:description" content="本篇主要记录 Hexo 静态博客接入 Gitment 的步骤和踩坑。基于 github.io 的静态博客。">
@@ -417,14 +417,14 @@
 <a id="more"></a>
 <p>作者的文档: <a href="https://imsun.net/posts/gitment-introduction/" target="_blank" rel="noopener">使用 GitHub Issues 搭建评论系统</a></p>
 <h2 id="注册-OAuth-Application-注意点。"><a href="#注册-OAuth-Application-注意点。" class="headerlink" title="注册 OAuth Application 注意点。"></a>注册 OAuth Application 注意点。</h2><p>如果是 github.io 的静态博客，那么 callback URL 是 <a href="https://github.com">https://github.com</a> , 如果是自己的域名，那么需要填写自己的。<br>其他的配置应该是随意的，欢迎打脸 0.0</p>
-<h2 id="Error：validation-failed"><a href="#Error：validation-failed" class="headerlink" title="Error：validation failed"></a>Error：validation failed</h2><p>issue的标签label有长度限制！labels的最大长度限制是50个字符。</p>
-<p>这个id的作用，就是针对一个文章有唯一的标识来判断这篇本章。</p>
+<h2 id="Error：validation-failed"><a href="#Error：validation-failed" class="headerlink" title="Error：validation failed"></a>Error：validation failed</h2><p>Issue 的标签 Label 有长度限制！Labels 的最大长度限制是50个字符。</p>
+<p>这个 id 的作用，就是针对一个文章有唯一的标识来判断这篇本章。</p>
 <p><a href="http://xichen.pub/2018/01/31/2018-01-31-gitment/" target="_blank" rel="noopener">时间作为标签</a><br><a href="http://www.xjdesyxx.top/2018/02/07/errsln/" target="_blank" rel="noopener">新增副标题作为标签</a></p>
-<p>时间作为标签，每一个评论都是一个issue，甚至刷新页面都会有一个空的issue，所以不推荐。</p>
+<p>时间作为标签，每一个评论都是一个 Issue，甚至刷新页面都会有一个空的 Issue，所以不推荐。</p>
 <p>副标题作为标签，没有尝试，但是每篇文章都要起一个副标题感觉没有必要。所以没有采用。</p>
 <p>具体需要修改的位置： themes/next/layout/_third-party/comments/gitment.swig (source 27)</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id: window.location.pathname, // 默认设置</span><br></pre></td></tr></table></figure>
-<p>由于这个 pathname 会将汉子转换编码，导致字符长度过长。那么我的修改方案就是将编码再转换回去。</p>
+<p>由于这个 pathname 会将汉字转换编码，导致字符长度过长。那么我的修改方案就是将编码再转换回去。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id: window.decodeURIComponent(window.location.pathname),</span><br></pre></td></tr></table></figure>
 <p>只要标题不浪，该方案问题不大。</p>
 <p>附上主题中 _config.yml 相关配置：</p>
