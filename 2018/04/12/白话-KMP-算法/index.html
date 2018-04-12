@@ -99,25 +99,24 @@
 
 
 
-  <meta name="description" content="iTerm2 中对于分支的显示方案并不是很人性化。通过安装 Oh-My-Zsh 对分支控制了然于胸。本篇文章主要介绍 Oh-My-Zsh 的安装以及主题搭配方案。感兴趣的同学可以参照着配置自己喜欢的主题样式">
-<meta name="keywords" content="Tools,iTerm">
+  <meta name="description" content="KMP 算法是计算机字符串匹配的常规算法。wiki本篇文章是从个人角度出发，用通俗易懂的方式描述对 KMP 算法的理解。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="zsh[Oh My Zsh]">
-<meta property="og:url" content="https://github.com/otwayz/2017/12/10/zsh-Oh-My-Zsh/index.html">
+<meta property="og:title" content="白话 KMP 算法">
+<meta property="og:url" content="https://github.com/otwayz/2018/04/12/白话-KMP-算法/index.html">
 <meta property="og:site_name" content="Otway">
-<meta property="og:description" content="iTerm2 中对于分支的显示方案并不是很人性化。通过安装 Oh-My-Zsh 对分支控制了然于胸。本篇文章主要介绍 Oh-My-Zsh 的安装以及主题搭配方案。感兴趣的同学可以参照着配置自己喜欢的主题样式">
+<meta property="og:description" content="KMP 算法是计算机字符串匹配的常规算法。wiki本篇文章是从个人角度出发，用通俗易懂的方式描述对 KMP 算法的理解。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-01-28T07:43:09.000Z">
+<meta property="og:updated_time" content="2018-04-12T03:34:07.916Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="zsh[Oh My Zsh]">
-<meta name="twitter:description" content="iTerm2 中对于分支的显示方案并不是很人性化。通过安装 Oh-My-Zsh 对分支控制了然于胸。本篇文章主要介绍 Oh-My-Zsh 的安装以及主题搭配方案。感兴趣的同学可以参照着配置自己喜欢的主题样式">
+<meta name="twitter:title" content="白话 KMP 算法">
+<meta name="twitter:description" content="KMP 算法是计算机字符串匹配的常规算法。wiki本篇文章是从个人角度出发，用通俗易懂的方式描述对 KMP 算法的理解。">
 
 
 
 
 
 
-  <link rel="canonical" href="https://github.com/otwayz/2017/12/10/zsh-Oh-My-Zsh/"/>
+  <link rel="canonical" href="https://github.com/otwayz/2018/04/12/白话-KMP-算法/"/>
 
 
 
@@ -127,7 +126,7 @@
   };
 </script>
 
-  <title>zsh[Oh My Zsh] | Otway</title>
+  <title>白话 KMP 算法 | Otway</title>
   
 
 
@@ -330,7 +329,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/otwayz/2017/12/10/zsh-Oh-My-Zsh/">
+    <link itemprop="mainEntityOfPage" href="https://github.com/otwayz/2018/04/12/白话-KMP-算法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Otway">
@@ -347,7 +346,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">zsh[Oh My Zsh]</h1>
+          <h1 class="post-title" itemprop="name headline">白话 KMP 算法</h1>
         
 
         <div class="post-meta">
@@ -359,7 +358,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-10T02:02:05+08:00">2017-12-10</time>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-12T09:48:01+08:00">2018-04-12</time>
             
 
             
@@ -368,6 +367,24 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/" itemprop="url" rel="index"><span itemprop="name">算法</span></a></span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -396,39 +413,103 @@
       
 
       
-        <p><code>iTerm2</code> 中对于分支的显示方案并不是很人性化。通过安装 <code>Oh-My-Zsh</code> 对分支控制了然于胸。<br>本篇文章主要介绍 <code>Oh-My-Zsh</code> 的安装以及主题搭配方案。感兴趣的同学可以参照着配置自己喜欢的主题样式</p>
+        <p>KMP 算法是计算机字符串匹配的常规算法。<a href="https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm" target="_blank" rel="noopener">wiki</a><br>本篇文章是从个人角度出发，用通俗易懂的方式描述对 KMP 算法的理解。</p>
 <a id="more"></a>
-<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><hr>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh</span><br><span class="line"># Backup your existing ~/.zshrc file:  optional</span><br><span class="line">cp ~/.zshrc ~/.zshrc.orig</span><br><span class="line"># Recommend</span><br><span class="line">cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc</span><br><span class="line">source ~/.zshrc</span><br><span class="line"># Change your default shell</span><br><span class="line">chsh -s /bin/zsh</span><br></pre></td></tr></table></figure>
-<h1 id="主题配置"><a href="#主题配置" class="headerlink" title="主题配置"></a>主题配置</h1><hr>
-<p>采用的是<a href="https://github.com/bhilburn/powerlevel9k">powerlevel9k</a>主题，色系是<a href="https://github.com/Ch4s3/iTerm2-Neutron">Neutron</a></p>
-<p>以下是安装 powerline 以及解决字体乱码问题</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">pip install --user powerline-status</span><br><span class="line"></span><br><span class="line"><span class="comment"># Download fonts and font config.</span></span><br><span class="line">wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf</span><br><span class="line">wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf</span><br><span class="line"></span><br><span class="line"><span class="comment"># Linux</span></span><br><span class="line">mv PowerlineSymbols.otf ~/.fonts/</span><br><span class="line"><span class="comment"># Update font cache for the path the font was moved to.</span></span><br><span class="line"><span class="built_in">fc</span>-cache -vf ~/.fonts/</span><br><span class="line"><span class="comment"># Install the fontconfig file.</span></span><br><span class="line">mv 10-powerline-symbols.conf ~/.config/fontconfig/conf.d/</span><br><span class="line"></span><br><span class="line"><span class="comment"># Mac OS X</span></span><br><span class="line"><span class="comment"># You can click the PowerlineSymbols.otf to install or you can move the file to font dir like:</span></span><br><span class="line">mv PowerlineSymbols.otf /Library/Fonts/</span><br></pre></td></tr></table></figure>
-<p>字体安装完毕之后，需要:</p>
-<blockquote>
-<p>配置色系</p>
-</blockquote>
-<ul>
-<li>Launch iTerm 2. Get the latest version at <a href="http://www.iterm2.com/" target="_blank" rel="noopener">iterm2.com</a></li>
-<li>Type CMD+i (⌘+i)</li>
-<li>Navigate to Colors tab</li>
-<li>Click on Load Presets</li>
-<li>Click on Import</li>
-<li>Save the neutron.itermcolors file</li>
-<li>Click on Load Presets and choose neutron</li>
-</ul>
-<blockquote>
-<p>配置字体</p>
-</blockquote>
-<ul>
-<li>Navigate to Text tab</li>
-<li>Click Change Font</li>
-<li>Search PowerlineSymbols and select to use</li>
-</ul>
-<p>样式配置(在~/.zshrc中添加):</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs)</span><br><span class="line">POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status time)</span><br><span class="line">POWERLEVEL9K_TIME_FORMAT=<span class="string">"%D&#123;%H:%M:%S&#125;"</span></span><br><span class="line">POWERLEVEL9K_NODE_VERSION_BACKGROUND=<span class="string">'022'</span></span><br><span class="line">POWERLEVEL9K_SHORTEN_DIR_LENGTH=1</span><br></pre></td></tr></table></figure>
-<p>更多可参看: <a href="https://github.com/robbyrussell/oh-my-zsh/wiki/Themes">主题</a>、<a href="https://github.com/mbadolato/iTerm2-Color-Schemes">色系</a></p>
-<p>ps: 由于 git 是默认安装的插件，而且 ~/.zshrc 中是默认的高亮，满足了基本使用。如果需要安装插件，请自行 <a href="https://www.google.com" target="_blank" rel="noopener">google</a> 。刚接触的时候，迷恋插件，然后找到 Github 上的脚本安装，将 Vim 打造成了炫酷的 IDE 效果，由于不熟悉操作，放弃之，自此远离非必要插件，需求驱动安装插件我觉得是新手最佳选择.</p>
+<h1 id="匹配值表"><a href="#匹配值表" class="headerlink" title="匹配值表"></a>匹配值表</h1><p>对于 KMP 来说，“匹配值表”是很关键的。下面我们从简单示例出发描述匹配值表是如何产生的，以便理解。</p>
+<p>现在 我们需要查找的字符串是 “ABABABCA”。</p>
+<p>在描述“匹配值表“之前，我们需要简短的介绍下前缀和后缀的概念:</p>
+<p>前缀：从 0 位，依次截取 1 到(len - 1)长度字符串的集合<br>后缀：从 len - 1 位反序，依次截取 1 到(len - 1)长度字符串的集合</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">字符串</th>
+<th style="text-align:left">前缀集合</th>
+<th style="text-align:left">后缀集合</th>
+<th style="text-align:left">前缀后缀交集</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">“A”</td>
+<td style="text-align:left">[]</td>
+<td style="text-align:left">[]</td>
+<td style="text-align:left">[]</td>
+</tr>
+<tr>
+<td style="text-align:left">“AB”</td>
+<td style="text-align:left">[A]</td>
+<td style="text-align:left">[B]</td>
+<td style="text-align:left">[]</td>
+</tr>
+<tr>
+<td style="text-align:left">“ABA”</td>
+<td style="text-align:left">[A,AB]</td>
+<td style="text-align:left">[A, BA]</td>
+<td style="text-align:left">[A]</td>
+</tr>
+<tr>
+<td style="text-align:left">“ABAB”</td>
+<td style="text-align:left">[A, AB, ABA]</td>
+<td style="text-align:left">[B, AB, BAB]</td>
+<td style="text-align:left">[AB]</td>
+</tr>
+<tr>
+<td style="text-align:left">“ABABA”</td>
+<td style="text-align:left">[A, AB, ABA, ABAB]</td>
+<td style="text-align:left">[A, BA, ABA, BABA]</td>
+<td style="text-align:left">[A, ABA]</td>
+</tr>
+<tr>
+<td style="text-align:left">“ABABAB”</td>
+<td style="text-align:left">[A, AB, ABA, ABAB, ABABA]</td>
+<td style="text-align:left">[B, AB, BAB, ABAB, BABAB]</td>
+<td style="text-align:left">[AB, ABAB]</td>
+</tr>
+<tr>
+<td style="text-align:left">“ABABABC”</td>
+<td style="text-align:left">[A, AB, ABA, ABAB, ABABA, ABABAB]</td>
+<td style="text-align:left">[C, BC, ABC, BABC, ABABC, BABABC]</td>
+<td style="text-align:left">[]</td>
+</tr>
+<tr>
+<td style="text-align:left">“ABABABCA”</td>
+<td style="text-align:left">[A, AB, ABA, ABAB, ABABA, ABABAB, ABABABC]</td>
+<td style="text-align:left">[A, CA, BCA, ABCA, BABCA, ABABCA, BABABCA]</td>
+<td style="text-align:left">[A]</td>
+</tr>
+</tbody>
+</table>
+<p>从上表，如果耐心看，完全可以理解前缀和后缀的概念。</p>
+<p>那么“匹配值”又是指什么呢？</p>
+<p><strong>“匹配值”是指前缀和后缀集合，最长共有元素的长度，即交集中最长元素的长度</strong></p>
+<p>那么不难从上表中得出每一位(index)字符对应“匹配值(value)”:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">char: | A | B | A | B | A | B | C | A |</span><br><span class="line">index:| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |</span><br><span class="line">value:| 0 | 0 | 1 | 2 | 3 | 4 | 0 | 1 |</span><br></pre></td></tr></table></figure>
+<h1 id="匹配值表的使用"><a href="#匹配值表的使用" class="headerlink" title="匹配值表的使用"></a>匹配值表的使用</h1><p>我们可以根据匹配值表来加速查找匹配的过程。  </p>
+<p>下面还是举例说明问题：</p>
+<p>在字符串”BACBABABAABCBABABABCA”(text)中查找上文中的字符串”ABABABCA”(pattern)，<br>下文中对两个字符串的代称为括号之内的单词。</p>
+<p>从 text 第一位开始匹配，第一次匹配成功是这样：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BACBABABAABCBABABABCA</span><br><span class="line"> |</span><br><span class="line"> ABABABCA</span><br></pre></td></tr></table></figure>
+<p>那么开始往后匹配，发现 text 的第二位”C”和 pattern 的第二位”B”不匹配，<br>所以当前部分匹配长度为1(只有一个A)，并且根据上文的匹配值表得到，当前的匹配值为 0。</p>
+<p><code>移动位数 = 已匹配字符长度 - 对应位的匹配值</code></p>
+<p>即 移动位数 = 1 - 0，所以我们继续向后移一位进行匹配。</p>
+<p>再一次匹配成功的情形：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BACBABABAABCBABABABCA</span><br><span class="line">    |||||</span><br><span class="line">    ABABABCA</span><br></pre></td></tr></table></figure>
+<p>此时，text 中的”A”与 pattern 中的 “B” 不匹配，如果不按照算法，肯定是继续后移一位进行匹配。<br>如果根据上述计算公式：</p>
+<p>移动位数 = “ABABA”.length - pattern[4]的匹配值<br>即 5 - 3 = 2</p>
+<p>所以我们可以一次后移两位：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BACBABABAABCBABABABCA</span><br><span class="line">    xx|||</span><br><span class="line">      ABABABCA</span><br></pre></td></tr></table></figure>
+<p>又不匹配了，此时应该后移<br> “ABA”.length - pattern[2]的匹配值<br>即 3 - 1 = 2</p>
+<p>继续后移两位：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BACBABABAABCBABABABCA</span><br><span class="line">      xx|</span><br><span class="line">        ABABABCA</span><br></pre></td></tr></table></figure>
+<p>继续后移<br>“A”.length - pattern[0]的匹配值<br>即 1 - 0 = 1</p>
+<p>后移一位：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BACBABABAABCBABABABCA</span><br><span class="line">        x||</span><br><span class="line">         ABABABCA</span><br></pre></td></tr></table></figure>
+<p>继续后移<br>“AB”.length - pattern[1]的匹配值<br>即 2 - 0 = 2</p>
+<p>后移两位：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BACBABABAABCBABABABCA</span><br><span class="line">         xx|</span><br><span class="line">           ABABABCA</span><br></pre></td></tr></table></figure>
+<p><br>第一位都不匹配，我们继续往后移动直到匹配成功</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BACBABABAABCBABABABCA</span><br><span class="line">             ||||||||</span><br><span class="line">             ABABABCA</span><br></pre></td></tr></table></figure>
+<p>移动几次之后(step=1)，找到了最终匹配结果。</p>
 
       
     </div>
@@ -447,14 +528,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/Tools/" rel="tag"># Tools</a>
-          
-            <a href="/tags/iTerm/" rel="tag"># iTerm</a>
-          
-        </div>
-      
 
       
       
@@ -464,8 +537,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/12/10/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
+              <a href="/2018/04/09/混淆注意事项/" rel="next" title="混淆注意事项">
+                <i class="fa fa-chevron-left"></i> 混淆注意事项
               </a>
             
           </div>
@@ -473,10 +546,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/12/10/Android-Menu/" rel="prev" title="Android Menu">
-                Android Menu <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -660,7 +729,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#主题配置"><span class="nav-number">2.</span> <span class="nav-text">主题配置</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#匹配值表"><span class="nav-number">1.</span> <span class="nav-text">匹配值表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#匹配值表的使用"><span class="nav-number">2.</span> <span class="nav-text">匹配值表的使用</span></a></li></ol></div>
             
 
           </div>
