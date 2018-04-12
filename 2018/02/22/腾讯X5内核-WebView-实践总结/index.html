@@ -247,7 +247,7 @@
         
           
   
-  <li class="menu-item menu-item-categories menu-item-active">
+  <li class="menu-item menu-item-categories">
     <a href="/categories/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-th"></i> <br />Categories</a>
 </li>
@@ -257,7 +257,7 @@
         
           
   
-  <li class="menu-item menu-item-about">
+  <li class="menu-item menu-item-about menu-item-active">
     <a href="/about/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
 </li>
@@ -905,12 +905,17 @@
 <!-- END LOCAL -->
 
     
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
 
     
       <script type="text/javascript">
       function renderGitment(){
         var gitment = new Gitment({
-            id: '<%= page.date %>',
+            id: '<%= page.title %>',
             owner: 'otwayz',
             repo: 'BlogComments',
             
