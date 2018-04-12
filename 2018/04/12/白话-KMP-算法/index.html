@@ -933,7 +933,7 @@
       <script type="text/javascript">
       function renderGitment(){
         var gitment = new Gitment({
-            id: new Date(),
+            id: window.decodeURIComponent(window.location.pathname),
             owner: 'otwayz',
             repo: 'BlogComments',
             
