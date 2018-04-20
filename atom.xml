@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://github.com/otwayz/"/>
-  <updated>2018-04-12T09:13:30.000Z</updated>
+  <updated>2018-04-20T06:07:38.000Z</updated>
   <id>https://github.com/otwayz/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>死锁防御战</title>
+    <link href="https://github.com/otwayz/2018/04/20/%E6%AD%BB%E9%94%81%E9%98%B2%E5%BE%A1%E6%88%98/"/>
+    <id>https://github.com/otwayz/2018/04/20/死锁防御战/</id>
+    <published>2018-04-20T02:19:07.000Z</published>
+    <updated>2018-04-20T06:07:38.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>在某些应用场景下，能够做到预防死锁的发生。本文会描述三种情形：</p><ol><li>Lock Ordering</li><li>Lock Timeout</li><li>Deadlock Detection</li></ol><a id="more"></a><h2 id="Lock-Ordering"><a href="#Lock-Ordering" class="headerlink" title="Lock Ordering"></a>Lock Ordering</h2><p>多个线程需要相同的锁来完成代码顺畅运行，但是访问锁的顺序是不同的，那么就可能会发生死锁的情况。</p><p>也就是说，如果多个线程需要相同的锁，但是他们对锁的访问顺序是相同的，那么就不可能会出现死锁的情况。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Thread 1:</span><br><span class="line">    lock A</span><br><span class="line">    lock B</span><br><span class="line"></span><br><span class="line">Thread 2:</span><br><span class="line">    <span class="built_in">wait</span> <span class="keyword">for</span> A</span><br><span class="line">    lock C (when A locked)</span><br><span class="line"></span><br><span class="line">Thread 3:</span><br><span class="line">    <span class="built_in">wait</span> <span class="keyword">for</span> A</span><br><span class="line">    <span class="built_in">wait</span> <span class="keyword">for</span> B</span><br><span class="line">    <span class="built_in">wait</span> <span class="keyword">for</span> C</span><br></pre></td></tr></table></figure><p>如果现在有一个线程，需要多个锁（和 Thread 3 类似），它必须要找既定的顺序去获取锁，它不能在没获取前面锁的情况下（例如:A）去获取排在后面的锁（例如:B）。</p><p><strong>“锁排序”是一种简单而有效的死锁预防机制。但是，只有在获取任何锁之前就知道所需的所有锁才能使用这种方式防御。</strong></p><h2 id="Lock-Timeout"><a href="#Lock-Timeout" class="headerlink" title="Lock Timeout"></a>Lock Timeout</h2><p>另一个死锁预防机制是<strong>对尝试“获取锁”设置超时时长，这意味着尝试获取锁的线程只会在放弃之前阻塞这么长的时间。</strong></p><p>如果一个线程在给定的超时时间内仍没有成功获取所有必要的锁，那么它将阻塞并释放所有已持有的锁，等待一段随机时间，然后重试。</p><p>等待的随机时间用于让其他线程尝试获取相同的锁，从而让应用程序继续运行而不阻塞。</p><p>下面的例子就是两个线程尝试以不同的顺序获取相同的锁，然后线程阻塞和重试：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Thread 1 locks A</span><br><span class="line">Thread 2 locks B</span><br><span class="line"></span><br><span class="line">Thread 1 attempts to lock B but is blocked</span><br><span class="line">Thread 2 attempts to lock A but is blocked</span><br><span class="line"></span><br><span class="line">Thread 1<span class="string">'s lock attempt on B times out</span></span><br><span class="line"><span class="string">Thread 1 backs up and releases A as well</span></span><br><span class="line"><span class="string">Thread 1 waits randomly (e.g. 257 millis) before retrying.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Thread 2'</span>s lock attempt on A <span class="built_in">times</span> out</span><br><span class="line">Thread 2 backs up and releases B as well</span><br><span class="line">Thread 2 waits randomly (e.g. 43 millis) before retrying.</span><br></pre></td></tr></table></figure><p>上例中，Thread 2 比 Thread 1 先 200ms 进行重新尝试并且在这种情况下很大可能会成功获取两个必要锁。Thread 1 将继续等待 lock A。当Thread 2运行结束，Thread 1 也能够获取两个锁。（除非Thread 2 或者其他线程在又开始插足锁得获取）</p><blockquote><p>注：锁超时并不意味着线程已经死锁，也可能意味着持有锁的线程（导致另一个线程超时）需要很长的时间来完成它的任务。</p></blockquote><p>另外，如果有很多的线程竞争相同的资源，他们仍然有可能多次的同时重试，即使超时和阻塞。这种情况在两个线程在重试之前等待0到500ms可能不会发生，但是如果是10到20个线程，那么情况就不一样了。它和两个线程等待相用时间或者近乎相同的时间再重试的情况差不多。</p><p>但是，锁的超时机制并不能在Java的同步代码块中设置超时，你将不得不创建自定义锁类或使用java.util.concurrency包中的一个Java 5并发结构，编写自定义锁并不困难，但超出本文范围，有兴趣的自行了解。</p><h2 id="Deadlock-Detection"><a href="#Deadlock-Detection" class="headerlink" title="Deadlock Detection"></a>Deadlock Detection</h2><p><strong>死锁检测是一种较重的死锁防御机制，针对无法获取锁顺序和锁超时不可行的情况。</strong></p><p>每当线程<strong>takes</strong>锁时，都会在线程和锁的数据结构中注明。另外，线程<strong>requests</strong>锁也会在数据结构中注明。</p><p>当线程请求锁的请求被拒绝时，线程可以遍历锁图来检查死锁。例如，如果线程A请求 lock 7，但是 lock 7被线程B持有，线程A会检测线程B是否请求线程A已经持有的锁（如果有）。如果线程B请求是线程A已经持有的锁，则发生死锁。</p><p>当然，大部分情况会更加复杂，往往都是多个线程造成死锁。</p><p>那么发现线程死锁该如何做呢?</p><p>一种可能的操作时释放所有锁，阻塞等待一段随机时间，然后重试。这和更简单的锁超时机制类似，只是线程仅在确定发生死锁的时候进行阻塞，而不仅根据发生锁超时来判断。但是，如果很多线程正在争夺相同的锁，即使它们阻塞并等待，它们也可能会重复地陷入僵局。</p><p>一个更好的选择是确定和分配线程的优先级，以便于阻塞一个（或几个）线程，其余的线程继续获取他们所需的锁，就像没有死锁发生一样。如果分配给线程的优先级是固定的，相同的线程将总是被富裕更高的优先级。为了避免这种情况，可以在检测死锁时随机分配优先级。</p><p>原文链接:</p><p>  <a href="http://tutorials.jenkov.com/java-concurrency/deadlock-prevention.html#timeout" target="_blank" rel="noopener">http://tutorials.jenkov.com/java-concurrency/deadlock-prevention.html#timeout</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在某些应用场景下，能够做到预防死锁的发生。本文会描述三种情形：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Lock Ordering&lt;/li&gt;
+&lt;li&gt;Lock Timeout&lt;/li&gt;
+&lt;li&gt;Deadlock Detection&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+      <category term="Java" scheme="https://github.com/otwayz/categories/Java/"/>
+    
+    
+      <category term="Lock" scheme="https://github.com/otwayz/tags/Lock/"/>
+    
+  </entry>
   
   <entry>
     <title>Hexo 博客接入 Gitment 评论系统踩坑</title>
