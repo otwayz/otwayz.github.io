@@ -107,12 +107,13 @@
 <meta property="og:site_name" content="Otway">
 <meta property="og:description" content="在多线程并发编程中，锁的运用很常见。synchronized 的几种运用方式，相信大部分 Java 程序员已经很熟悉。而 volatile 作为轻量级的 synchronized，不会像锁一样造成阻塞，因此，在能够安全使用 volatile 的情况下，volatile 可以提供一些优于锁的可伸缩特性。如果读操作的次数要远远超过写操作，与锁相比，volatile 变量通常能够减少同步的性能开销。">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://res.cloudinary.com/otway/image/upload/v1523032573/1523032548939.jpg">
-<meta property="og:updated_time" content="2018-04-07T14:04:01.000Z">
+<meta property="og:image" content="http://res.cloudinary.com/otway/image/upload/v1525240875/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png">
+<meta property="og:image" content="http://res.cloudinary.com/otway/image/upload/v1525240877/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png">
+<meta property="og:updated_time" content="2018-05-02T06:44:23.708Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java 多线程 ：Volatile">
 <meta name="twitter:description" content="在多线程并发编程中，锁的运用很常见。synchronized 的几种运用方式，相信大部分 Java 程序员已经很熟悉。而 volatile 作为轻量级的 synchronized，不会像锁一样造成阻塞，因此，在能够安全使用 volatile 的情况下，volatile 可以提供一些优于锁的可伸缩特性。如果读操作的次数要远远超过写操作，与锁相比，volatile 变量通常能够减少同步的性能开销。">
-<meta name="twitter:image" content="http://res.cloudinary.com/otway/image/upload/v1523032573/1523032548939.jpg">
+<meta name="twitter:image" content="http://res.cloudinary.com/otway/image/upload/v1525240875/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png">
 
 
 
@@ -445,10 +446,18 @@
       
         <p>在多线程并发编程中，锁的运用很常见。synchronized 的几种运用方式，相信大部分 Java 程序员已经很熟悉。而 <strong>volatile 作为轻量级的 synchronized</strong>，不会像锁一样造成阻塞，因此，在能够安全使用 volatile 的情况下，volatile 可以提供一些优于锁的可伸缩特性。如果读操作的次数要远远超过写操作，与锁相比，volatile 变量通常能够减少同步的性能开销。</p>
 <a id="more"></a>
+<p>在现代计算机系统中，由于计算机的存储设备与处理器的运算速度有几个数量级的差距，所以现代计算机系统都不得不加入一层读写速度尽可能接近处理器运算速度的高速缓存来作为内存与处理器之间的缓冲：将运算需要使用到的数据复制到缓存中，让运算能快速进行，当运算结束后再从缓存同步回内存之中，这样处理器就无须等待缓存的内存读写了。</p>
+<p>下面是计算机系统中处理器、高速缓存、主内存间的交互关系:</p>
+<p><img src="http://res.cloudinary.com/otway/image/upload/v1525240875/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png" alt="计算机系统内存模型"></p>
+<p>基于高速缓存的存储交互很好的解决了处理器与内存的速度矛盾，但是也为计算机系统带来更高的复杂度，因为它引入了一个新的问题：缓存一致性。</p>
+<p>下面是Java中线程、主内存、工作内存交互关系:</p>
+<p><img src="http://res.cloudinary.com/otway/image/upload/v1525240877/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png" alt="Java 内存模型"></p>
 <h2 id="Volatile-的官方定义"><a href="#Volatile-的官方定义" class="headerlink" title="Volatile 的官方定义"></a>Volatile 的官方定义</h2><p>Java 语言规范第三版中对 volatile 的定义如下： java编程语言允许线程访问共享变量，为了确保共享变量能被准确和一致的更新，线程应该确保通过排他锁单独获得这个变量。Java语言提供了 volatile，在某些情况下比锁更加方便。如果一个字段被声明成volatile，java线程内存模型确保所有线程看到这个变量的值是一致的。</p>
-<h2 id="内存不可见的含义"><a href="#内存不可见的含义" class="headerlink" title="内存不可见的含义"></a>内存不可见的含义</h2><p>在 JVM 中，对于多线程应用，如果多个线程同时使用某个没有 volatile 修饰的变量时，每个线程会从堆内存拷贝目标变量到当前线程所在的 CPU 的缓存中，然后针对这个 Cache 进行具体的操作。如果在多核设备上，多线程同时操作这个变量，可能存在两个线程运行在两个不同的 CPU 的情况，那么这两个线程所在的 CPU 将会存在各自的 CPU Cache。</p>
-<p><img src="http://res.cloudinary.com/otway/image/upload/v1523032573/1523032548939.jpg" width="50%" height="50%"></p>
-<p>这种情况下，从堆内存读取或者写入，都会存在一些问题。那么这个时候对于这两个线程来说，堆内存中的变量就是不可见的。</p>
+<h2 id="内存不可见的含义"><a href="#内存不可见的含义" class="headerlink" title="内存不可见的含义"></a>内存不可见的含义</h2><p>在 JVM 中，对于多线程应用，如果多个线程同时使用某个没有 volatile 修饰的变量时，每个线程会从主内存拷贝目标变量到当前线程的工作内存中，然后在各自的工作内存进行具体的操作。</p>
+<blockquote>
+<p>可见性的定义：可见性是指当一个线程修改了共享变量的值，其他线程能够立即得到这个修改。</p>
+</blockquote>
+<p>在上面的情景中，不同线程的对主内存变量副本的操作不能够即时的反馈到主内存区，其他线程的工作内存更是无法感知，内存不可见。</p>
 <h2 id="如何保证内存可见"><a href="#如何保证内存可见" class="headerlink" title="如何保证内存可见"></a>如何保证内存可见</h2><p>volatile 如何实现内存可见的呢？<br>在x86处理器下通过工具获取JIT编译器生成的汇编指令：</p>
 <table>
 <thead>
@@ -480,14 +489,8 @@
 <blockquote>
 <p>使用 volatile 修饰的 long 或 double 变量，JVM 可以保证对其读写的原子性。</p>
 </blockquote>
-<p>但是，此处的 “写” 仅指对 64位 的变量进行直接赋值。而对于 i++ 这个语句，事实上涉及了 读取－修改－写入 三个操作：</p>
-<ul>
-<li>读取变量到栈中某个位置</li>
-<li>对栈中该位置的值进行自增</li>
-<li>将自增后的值写回到变量对应的存储位置</li>
-</ul>
-<p>所以多线程条件下使用 volatile 关键字的前提是：<strong>对变量的写操作不依赖于变量的当前值</strong>。</p>
-<h2 id="指令重新排序对-volatile-的影响"><a href="#指令重新排序对-volatile-的影响" class="headerlink" title="指令重新排序对 volatile 的影响"></a>指令重新排序对 volatile 的影响</h2><p>如果一个操作不是原子操作，那么 JVM 便可能会对该操作涉及的指令进行 <strong>重排序</strong>。重排序即在不改变程序语义的前提下，通过调整指令的执行顺序，尽可能达到提高运行效率的目的。</p>
+<p>但是，此处的 “写” 仅指对 64位 的变量进行直接赋值。</p>
+<h2 id="指令重新排序对-volatile-的影响"><a href="#指令重新排序对-volatile-的影响" class="headerlink" title="指令重新排序对 volatile 的影响"></a>指令重新排序对 volatile 的影响</h2><p>如果一个操作不是原子操作，那么 JVM 便可能会对该操作涉及的指令进行 <strong>重排序</strong>优化。重排序即在不改变程序语义的前提下，通过调整指令的执行顺序，尽可能达到提高运行效率的目的。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">a++;</span><br><span class="line">b++;</span><br></pre></td></tr></table></figure>
 <p>可能会被重新排序为：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">a++;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line">b++;</span><br></pre></td></tr></table></figure>
@@ -505,8 +508,18 @@
 </li>
 </ul>
 <p>上述的“happens-before”保证正在被实施。</p>
-<h2 id="volatile-并不保险"><a href="#volatile-并不保险" class="headerlink" title="volatile 并不保险"></a>volatile 并不保险</h2><p>对 volatile 修饰的变量操作时，即使每次都是从系统内存读取，都是直接写入系统内存，仍然会存在并发的情况。</p>
-<p>当多个线程同时写入一个 volatile 变量时，例如 <code>i++</code> 操作，第一个处理器缓存 i 进行了 +1 操作，还没来得及写入系统内存，第二个处理器页从系统内存中缓存了旧的 i 并且也完成了 +1 操作，并还没有写入系统内存。这时就会出现写入覆盖的情况。</p>
+<h2 id="必须保证操作原子性"><a href="#必须保证操作原子性" class="headerlink" title="必须保证操作原子性"></a>必须保证操作原子性</h2><p>对 volatile 修饰的变量操作时，即使每次都是从系统内存读取，都是直接写入系统内存，仍然会存在问题。</p>
+<p>当多个线程同时写入一个 volatile 变量时，例如 <code>i++</code> 操作。对于 <code>i++</code> 这个语句，事实上涉及了 读取－修改－写入 三个操作：</p>
+<ul>
+<li>读取变量到栈中某个位置</li>
+<li>对栈中该位置的值进行自增</li>
+<li>将自增后的值写回到变量对应的存储位置</li>
+</ul>
+<p>volatile 变量只能保证可见性，在不符合以下两条规则的运算场景中，仍需要通过加锁（使用 synchronized 或 java.util.concurrent 中的原子类）来保证原子性。</p>
+<ul>
+<li>运算结果并不依赖变量的当前值，或者能够确保只有单一的线程修改变量的值。</li>
+<li>变量不需要与其他的状态变量共同参与不变约束。</li>
+</ul>
 <h2 id="合适的使用场景"><a href="#合适的使用场景" class="headerlink" title="合适的使用场景"></a>合适的使用场景</h2><p>读取和写入一个 volatile 变量会直接和系统内存通信，对比与处理器缓存通信的消耗要大得多。访问 volatile 变量还防止指令重新排序，这是一种正常的性能增强技术。所以只有在真正需要变量强制可见性时才应该使用。</p>
 <p>具体的几种场景可以参考<a href="https://www.ibm.com/developerworks/cn/java/j-jtp06197.html" target="_blank" rel="noopener">正确使用 Volatile 变量</a></p>
 <p>参考资料：</p>
@@ -764,7 +777,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Volatile-的官方定义"><span class="nav-number">1.</span> <span class="nav-text">Volatile 的官方定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存不可见的含义"><span class="nav-number">2.</span> <span class="nav-text">内存不可见的含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何保证内存可见"><span class="nav-number">3.</span> <span class="nav-text">如何保证内存可见</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#保证对-64-位变量读写的原子性"><span class="nav-number">4.</span> <span class="nav-text">保证对 64 位变量读写的原子性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指令重新排序对-volatile-的影响"><span class="nav-number">5.</span> <span class="nav-text">指令重新排序对 volatile 的影响</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile-并不保险"><span class="nav-number">6.</span> <span class="nav-text">volatile 并不保险</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#合适的使用场景"><span class="nav-number">7.</span> <span class="nav-text">合适的使用场景</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Volatile-的官方定义"><span class="nav-number">1.</span> <span class="nav-text">Volatile 的官方定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存不可见的含义"><span class="nav-number">2.</span> <span class="nav-text">内存不可见的含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何保证内存可见"><span class="nav-number">3.</span> <span class="nav-text">如何保证内存可见</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#保证对-64-位变量读写的原子性"><span class="nav-number">4.</span> <span class="nav-text">保证对 64 位变量读写的原子性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指令重新排序对-volatile-的影响"><span class="nav-number">5.</span> <span class="nav-text">指令重新排序对 volatile 的影响</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#必须保证操作原子性"><span class="nav-number">6.</span> <span class="nav-text">必须保证操作原子性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#合适的使用场景"><span class="nav-number">7.</span> <span class="nav-text">合适的使用场景</span></a></li></ol></div>
             
 
           </div>
