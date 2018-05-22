@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://github.com/otwayz/"/>
-  <updated>2018-04-20T06:07:38.000Z</updated>
+  <updated>2018-05-22T02:54:43.173Z</updated>
   <id>https://github.com/otwayz/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>DashPathEffect not working</title>
+    <link href="https://github.com/otwayz/2018/05/22/DashPathEffect-not-working/"/>
+    <id>https://github.com/otwayz/2018/05/22/DashPathEffect-not-working/</id>
+    <published>2018-05-22T02:37:50.000Z</published>
+    <updated>2018-05-22T02:54:43.173Z</updated>
+    
+    <content type="html"><![CDATA[<p>由于公司的文字渲染引擎是自己实现的，在对单词进行标识时用到了虚线下划线的效果，通过 <code>Paint</code> 设置 <code>setPathEffect()</code> 方法，其中 <code>DashPathEffect</code> 类是官方提供的设置虚线的显示效果。在源码注释中明确说明 <code>Paint</code> 的 style 设置成 <code>STROKE</code> or <code>FILL_AND_STROKE</code> 才会生效。最近发现在高版本的 Android 设备（8.0）上，原本应该显示的虚线变成了实线。</p><a id="more"></a><p>官方的 API 在最新的 Android P 中并未对 <code>DashPathEffect</code> 类的说明进行修改</p><blockquote><p>The intervals array must contain an even number of entries (&gt;=2), with the even indices specifying the “on” intervals, and the odd indices specifying the “off” intervals. phase is an offset into the intervals array (mod the sum of all of the intervals). The intervals array controls the length of the dashes. The paint’s strokeWidth controls the thickness of the dashes. Note: this patheffect only affects drawing with the paint’s style is set to STROKE or FILL_AND_STROKE. It is ignored if the drawing is done with style == FILL.</p></blockquote><p>然而，莫名其妙的在高版本失效，肯定是版本导致的问题。</p><p>在 <code>Paint</code> 中的 <code>setPathEffect()</code> 方法都是调用 Native 方法实现的，未能看到具体的实现逻辑。</p><p>所以只能尝试修改 <code>Paint</code> 的一些设置。</p><p>最终发现， style 设置成 <code>FILL_AND_STROKE</code> 是无效的， 设置成 <code>STROKE</code> 才能在高版本中完美展示虚线效果。</p><p>虽然是一个很小的问题，但是文档没有更新真心很坑。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;由于公司的文字渲染引擎是自己实现的，在对单词进行标识时用到了虚线下划线的效果，通过 &lt;code&gt;Paint&lt;/code&gt; 设置 &lt;code&gt;setPathEffect()&lt;/code&gt; 方法，其中 &lt;code&gt;DashPathEffect&lt;/code&gt; 类是官方提供的设置虚线的显示效果。在源码注释中明确说明 &lt;code&gt;Paint&lt;/code&gt; 的 style 设置成 &lt;code&gt;STROKE&lt;/code&gt; or &lt;code&gt;FILL_AND_STROKE&lt;/code&gt; 才会生效。最近发现在高版本的 Android 设备（8.0）上，原本应该显示的虚线变成了实线。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Android" scheme="https://github.com/otwayz/categories/Android/"/>
+    
+    
+      <category term="bug" scheme="https://github.com/otwayz/tags/bug/"/>
+    
+  </entry>
   
   <entry>
     <title>死锁防御战</title>
