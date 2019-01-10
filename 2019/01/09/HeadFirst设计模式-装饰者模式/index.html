@@ -99,23 +99,23 @@
 
 
 
-  <meta name="description" content="本文是阅读 HeadFirst 设计模式——装饰者模式的总结。这本书的教学模式很不错，个人很喜欢，由实际的案例由浅入胜，循序渐进的让你明白良好的设计是多么的优雅迷人（回头看看自己的代码，WTF！）。但是读第二遍的时候，居然想不起来这章节说了什么，到底怎么解决这个问题的。也就是说，看的时候爽快，看完了并没有应用到具体的Coding中。 这一章节的案例是：设计星巴兹咖啡系统">
+  <meta name="description" content="本文是阅读 Head First 设计模式——装饰者模式的总结。这本书的教学模式很不错，个人很喜欢，由实际的案例由浅入胜，循序渐进的让你明白良好的设计是多么的优雅迷人（回头看看自己的代码，WTF！）。但是读第二遍的时候，居然想不起来这章节说了什么，到底怎么解决这个问题的。也就是说，看的时候爽快，看完了并没有应用到具体的Coding中。 这一章节的案例是：设计星巴兹咖啡系统">
 <meta name="keywords" content="设计模式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="HeadFirst设计模式——装饰者模式">
+<meta property="og:title" content="Head First设计模式——装饰者模式">
 <meta property="og:url" content="https://github.com/otwayz/2019/01/09/HeadFirst设计模式-装饰者模式/index.html">
 <meta property="og:site_name" content="Otway">
-<meta property="og:description" content="本文是阅读 HeadFirst 设计模式——装饰者模式的总结。这本书的教学模式很不错，个人很喜欢，由实际的案例由浅入胜，循序渐进的让你明白良好的设计是多么的优雅迷人（回头看看自己的代码，WTF！）。但是读第二遍的时候，居然想不起来这章节说了什么，到底怎么解决这个问题的。也就是说，看的时候爽快，看完了并没有应用到具体的Coding中。 这一章节的案例是：设计星巴兹咖啡系统">
+<meta property="og:description" content="本文是阅读 Head First 设计模式——装饰者模式的总结。这本书的教学模式很不错，个人很喜欢，由实际的案例由浅入胜，循序渐进的让你明白良好的设计是多么的优雅迷人（回头看看自己的代码，WTF！）。但是读第二遍的时候，居然想不起来这章节说了什么，到底怎么解决这个问题的。也就是说，看的时候爽快，看完了并没有应用到具体的Coding中。 这一章节的案例是：设计星巴兹咖啡系统">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://res.cloudinary.com/otway/image/upload/v1547024867/coffee_origin_class.png">
 <meta property="og:image" content="https://res.cloudinary.com/otway/image/upload/v1547027379/coffee_extends_sample.png">
 <meta property="og:image" content="https://res.cloudinary.com/otway/image/upload/v1547091546/coffee_order_1.png">
 <meta property="og:image" content="https://res.cloudinary.com/otway/image/upload/v1547091545/coffee_order_2.png">
 <meta property="og:image" content="https://res.cloudinary.com/otway/image/upload/v1547103499/coffee_design_patterns_observer.png">
-<meta property="og:updated_time" content="2019-01-10T08:22:52.032Z">
+<meta property="og:updated_time" content="2019-01-10T08:48:11.654Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="HeadFirst设计模式——装饰者模式">
-<meta name="twitter:description" content="本文是阅读 HeadFirst 设计模式——装饰者模式的总结。这本书的教学模式很不错，个人很喜欢，由实际的案例由浅入胜，循序渐进的让你明白良好的设计是多么的优雅迷人（回头看看自己的代码，WTF！）。但是读第二遍的时候，居然想不起来这章节说了什么，到底怎么解决这个问题的。也就是说，看的时候爽快，看完了并没有应用到具体的Coding中。 这一章节的案例是：设计星巴兹咖啡系统">
+<meta name="twitter:title" content="Head First设计模式——装饰者模式">
+<meta name="twitter:description" content="本文是阅读 Head First 设计模式——装饰者模式的总结。这本书的教学模式很不错，个人很喜欢，由实际的案例由浅入胜，循序渐进的让你明白良好的设计是多么的优雅迷人（回头看看自己的代码，WTF！）。但是读第二遍的时候，居然想不起来这章节说了什么，到底怎么解决这个问题的。也就是说，看的时候爽快，看完了并没有应用到具体的Coding中。 这一章节的案例是：设计星巴兹咖啡系统">
 <meta name="twitter:image" content="https://res.cloudinary.com/otway/image/upload/v1547024867/coffee_origin_class.png">
 
 
@@ -135,7 +135,7 @@
   };
 </script>
 
-  <title>HeadFirst设计模式——装饰者模式 | Otway</title>
+  <title>Head First设计模式——装饰者模式 | Otway</title>
   
 
 
@@ -365,7 +365,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">HeadFirst设计模式——装饰者模式
+          <h1 class="post-title" itemprop="name headline">Head First设计模式——装饰者模式
               
             
           </h1>
@@ -447,7 +447,7 @@
       
 
       
-        <p>本文是阅读 HeadFirst 设计模式——装饰者模式的总结。<br>这本书的教学模式很不错，个人很喜欢，由实际的案例由浅入胜，循序渐进的让你明白良好的设计是多么的优雅迷人（回头看看自己的代码，WTF！）。<br>但是读第二遍的时候，居然想不起来这章节说了什么，到底怎么解决这个问题的。也就是说，看的时候爽快，看完了并没有应用到具体的Coding中。</p>
+        <p>本文是阅读 Head First 设计模式——装饰者模式的总结。<br>这本书的教学模式很不错，个人很喜欢，由实际的案例由浅入胜，循序渐进的让你明白良好的设计是多么的优雅迷人（回头看看自己的代码，WTF！）。<br>但是读第二遍的时候，居然想不起来这章节说了什么，到底怎么解决这个问题的。也就是说，看的时候爽快，看完了并没有应用到具体的Coding中。</p>
 <p>这一章节的案例是：设计星巴兹咖啡系统</p>
 <a id="more"></a>
 <blockquote>
@@ -478,7 +478,7 @@
 <p><img src="https://res.cloudinary.com/otway/image/upload/v1547091546/coffee_order_1.png" alt="订单构成1"><br><img src="https://res.cloudinary.com/otway/image/upload/v1547091545/coffee_order_2.png" alt="订单构成2"></p>
 <p>上面是pdf文本的截图，这个过程如果不画出来，就漏掉了很重要的循序渐进的过程。</p>
 <blockquote>
-<p>装饰者模式：动态的将责任附加到对象上。若是要扩展功能，装饰者提供了比继承更有弹性的替代方案。</p>
+<p><strong>装饰者模式</strong>：动态的将责任附加到对象上。若是要扩展功能，装饰者提供了比继承更有弹性的替代方案。</p>
 </blockquote>
 <p><img src="https://res.cloudinary.com/otway/image/upload/v1547103499/coffee_design_patterns_observer.png" alt="装饰者模式结构"></p>
 <p>上图是装饰者模式的结构类图。</p>
@@ -497,8 +497,8 @@
 <p>运行结果如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DarkRoast $<span class="number">1.99</span></span><br><span class="line">DarkRoast, Mocha, Mocha, Whip $<span class="number">2.49</span></span><br><span class="line"></span><br><span class="line">Process finished with exit code <span class="number">0</span></span><br></pre></td></tr></table></figure>
 <p><strong>真实世界的装饰者：Java I/O</strong></p>
-<p>文章本来是打算简单的总结下该章节的内容，方便以后资料的查找，回忆下知道大概讲的是什么东西，写下来发现，如果不能够将这个循序渐进的过程写下来，那么就失去这本书基本的宗旨。<br>上面的内容基本都是章节的文本，主要是怕自己理解错误造成误导效果。</p>
-<p>如果对文章的内容感兴趣，不妨去读一下《HeadFirst设计模式》。</p>
+<p>文章本来是打算简单的总结下该章节的内容，方便以后资料的查找，回忆下知道大概讲的是什么东西，写下来发现，如果不能够将这个循序渐进的过程写下来，那么就失去这本书基本的宗旨。<br>上面的内容基本都是章节的文本，主要是担心自己理解对误导了读者。</p>
+<p>如果对文章的内容感兴趣，不妨去读一下《Head First设计模式》。</p>
 
       
     </div>
