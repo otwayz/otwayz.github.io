@@ -99,16 +99,17 @@
 
 
 
-  <meta name="description" content="Ever tried, ever failed. No matter try again. Fail again, fail better.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Otway">
-<meta property="og:url" content="https://github.com/otwayz/tags/Lock/index.html">
+  <meta name="description" content="处理网络请求错误，是不可避免的需求。在当下盛行的 RxJava + Retrofit 的组合结构中，如何优雅的实现这种需求是所有开发者必须要解决的问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava 全局 Error 处理方案">
+<meta property="og:url" content="https://github.com/otwayz/2019/01/28/RxJava全局Error处理方案/index.html">
 <meta property="og:site_name" content="Otway">
-<meta property="og:description" content="Ever tried, ever failed. No matter try again. Fail again, fail better.">
+<meta property="og:description" content="处理网络请求错误，是不可避免的需求。在当下盛行的 RxJava + Retrofit 的组合结构中，如何优雅的实现这种需求是所有开发者必须要解决的问题。">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-01-28T03:55:23.477Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Otway">
-<meta name="twitter:description" content="Ever tried, ever failed. No matter try again. Fail again, fail better.">
+<meta name="twitter:title" content="RxJava 全局 Error 处理方案">
+<meta name="twitter:description" content="处理网络请求错误，是不可避免的需求。在当下盛行的 RxJava + Retrofit 的组合结构中，如何优雅的实现这种需求是所有开发者必须要解决的问题。">
 
 
 
@@ -117,7 +118,7 @@
 
 
 
-  <link rel="canonical" href="https://github.com/otwayz/tags/Lock/"/>
+  <link rel="canonical" href="https://github.com/otwayz/2019/01/28/RxJava全局Error处理方案/"/>
 
 
 
@@ -127,7 +128,7 @@
   };
 </script>
 
-  <title>Tag: Lock | Otway</title>
+  <title>RxJava 全局 Error 处理方案 | Otway</title>
   
 
 
@@ -174,7 +175,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -234,7 +235,7 @@
         
           
   
-  <li class="menu-item menu-item-tags menu-item-active">
+  <li class="menu-item menu-item-tags">
     <a href="/tags/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
 </li>
@@ -276,28 +277,6 @@
 
   
     
-
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
 
   
 
@@ -346,58 +325,185 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>Lock<small>Tag</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
+
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/otwayz/2019/01/28/RxJava全局Error处理方案/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Otway">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Otway">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/04/20/死锁防御战/" itemprop="url">
-              
-                <span itemprop="name">死锁防御战</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">RxJava 全局 Error 处理方案
+              
+            
+          </h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-04-20T10:19:07+08:00"
-              content="2018-04-20" >
-          04-20
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
 
-    </header>
-  </article>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-28T11:47:03+08:00">2019-01-28</time>
+            
 
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             Views: 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>处理网络请求错误，是不可避免的需求。在当下盛行的 <code>RxJava</code> + <code>Retrofit</code> 的组合结构中，如何优雅的实现这种需求是所有开发者必须要解决的问题。</p>
+<a id="more"></a>
+<p>参考网络提供方案：  </p>
+<ol>
+<li><a href="https://github.com/qingmei2/RxWeaver">不要打破链式调用！一个极低成本的RxJava全局Error处理方案</a>  </li>
+<li><a href="https://www.jianshu.com/p/d6552d020307" target="_blank" rel="noopener">io.reactivex.plugins 实现全局Error处理</a></li>
+</ol>
 
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/09/HeadFirst设计模式-装饰者模式/" rel="next" title="Head First设计模式——装饰者模式">
+                <i class="fa fa-chevron-left"></i> Head First设计模式——装饰者模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/20/Google-play-下架App之后的替身制作/" rel="prev" title="Google Play 下架App之后的替身制作">
+                Google Play 下架App之后的替身制作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
 
         </div>
         
@@ -707,6 +813,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.1.0"></script>
+
+
 
   
 
@@ -755,6 +865,28 @@
       </style>
     
 
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.decodeURIComponent(window.location.pathname),
+            owner: 'otwayz',
+            repo: 'BlogComments',
+            
+            oauth: {
+            
+            
+                client_secret: '85c8cf7633db9dadf4b0e7470d20476f3779b697',
+            
+                client_id: 'edb003e29495b5515a16'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
     
 
 
